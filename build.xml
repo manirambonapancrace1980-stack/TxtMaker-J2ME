@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TxtMaker-J2ME" default="build-jar" basedir=".">
+    <description>
+        Build script for TxtMaker J2ME application
+    </description>
+
+    <!-- Set properties -->
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    
+    <!-- J2ME WTK paths (adjust as needed) -->
+    <property name="wtk.home" value="/opt/J2ME_WTK"/>
+    <property name="preverify.dir" value="${wtk.home}/bin"/>
+    <property name="midpapi.jar" value="${wtk.home}/lib/midpapi.jar"/>
+    <property name="cldcapi.jar" value="${wtk.home}/lib/cldcapi.jar"/>
+
+    <!-- Initialize directories -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <!-- Compile Java sources -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" 
+               destdir="${classes.dir}"
+               debug="true"
+               debuglevel="lines,vars,source">
+            <classpath>
+                <pathelement location="${midpapi.jar}"/>
+                <pathelement location="${cldcapi.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Build JAR file -->
+    <target name="build-jar" depends="compile">
+        <jar destfile="${dist.dir}/TxtMaker.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="MIDlet-1" value="TxtMaker, , TxtMaker"/>
+                <attribute name="MIDlet-Name" value="TxtMaker"/>
+                <attribute name="MIDlet-Vendor" value="TxtMaker Development"/>
+                <attribute name="MIDlet-Version" value="1.0"/>
+                <attribute name="MicroEdition-Configuration" value="CLDC-1.0"/>
+                <attribute name="MicroEdition-Profile" value="MIDP-1.0"/>
+            </manifest>
+        </jar>
+        <echo message="JAR file created: ${dist.dir}/TxtMaker.jar"/>
+    </target>
+
+    <!-- Clean build artifacts -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <!-- Full rebuild -->
+    <target name="rebuild" depends="clean,build-jar"/>
+</project>
